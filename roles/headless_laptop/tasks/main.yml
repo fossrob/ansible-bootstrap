@@ -5,5 +5,5 @@
     path: /etc/systemd/logind.conf
     regexp: '^[#]?(HandleLidSwitch.*)=(.*$)'
     replace: '\1=ignore'
+  notify: restart systemd-logind
   become: true
-  notify: Restart systemd-logind
