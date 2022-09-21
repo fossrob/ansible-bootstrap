@@ -13,11 +13,11 @@
       tags: tailscale
     - role: packages
       tags: packages
+    - role: dell_fan_control
+      tags: dell_fan_control
     - role: flatpaks
       tags: flatpaks
     - role: yadm
       tags: yadm
     - role: dconf
       tags: dconf
-    - role: dell_fan_control
-      tags: dell_fan_control
