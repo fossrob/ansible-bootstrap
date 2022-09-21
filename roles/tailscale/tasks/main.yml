@@ -34,4 +34,5 @@
     cmd: tailscale up --auth-key "{{ tailscale_auth_key }}" --accept-routes="{{ tailscale_accept_routes }}"
   changed_when: false
   when: tailscale_status is failed
+  no_log: true
   become: true

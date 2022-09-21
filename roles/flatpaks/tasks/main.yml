@@ -3,12 +3,7 @@
   community.general.flatpak_remote:
     name: flathub
     flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
-  become: true
-
-- name: Update metadata to show newly-available software
-  ansible.builtin.command:
-    cmd: flatpak update --appstream
-  changed_when: false
+    state: present
   become: true
 
 - name: Install Flatpak runtimes
@@ -16,6 +11,7 @@
     name:
       - org.gtk.Gtk3theme.Adwaita-dark
       - runtime/org.freedesktop.Platform.ffmpeg-full/x86_64/22.08
+    state: present
   changed_when: false
   become: true
 
@@ -34,6 +30,7 @@
       - org.chromium.Chromium
       - org.flameshot.Flameshot
       - us.zoom.Zoom
+    state: present
   become: true
 
 - name: Configure dark theme

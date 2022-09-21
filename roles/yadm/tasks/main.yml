@@ -11,7 +11,7 @@
   ansible.builtin.file:
     path: ~/.local/bin/
     state: directory
-    mode: 0750
+    mode: 0700
 
 - name: Symlink YADM executable
   ansible.builtin.file:
@@ -25,15 +25,16 @@
     responses:
       "Password for 'https://fossrob@github.com'": "{{ yadm_personal_access_token }}"
     creates: ~/.local/share/yadm/repo.git
+  no_log: true
   register: dotfiles_result
 
 - name: Force checkout of conflict YADM dotfiles
   ansible.builtin.shell:
     cmd: yadm checkout $(pwd)
-  register: conflict_result
   changed_when:
     - '"Updated 1 path" in conflict_result.stderr'
   when: dotfiles_result is changed  # noqa: no-handler
+  register: conflict_result
 
 - name: Decrypt YADM stored secrets
   ansible.builtin.expect:
@@ -41,6 +42,7 @@
     responses:
       "enter AES-256-CBC decryption password": "{{ yadm_encrypt_password }}"
     creates: ~/.gnupg/github.asc
+  no_log: true
 
 - name: Import GPG key
   ansible.builtin.shell:
@@ -48,10 +50,10 @@
       if ! gpg --list-key D71C1FE78A916668; then
         gpg --batch --passphrase '{{ github_gpg_passphrase }}' --import ~/.gnupg/github.asc >/dev/null && echo "gpg key imported"
       fi
-  no_log: true
-  register: gpg_result
   changed_when:
     - '"gpg key imported" in gpg_result.stdout'
+  no_log: true
+  register: gpg_result
 
 - name: Change YADM remote to use standard git+ssh
   ansible.builtin.shell:
@@ -59,6 +61,6 @@
       if yadm remote get-url origin | grep -q '^http'; then
           yadm remote set-url origin git@github.com:fossrob/dotfiles.git && echo "remote updated"
       fi
-  register: remote_result
   changed_when:
     - '"remote updated" in remote_result.stdout'
+  register: remote_result

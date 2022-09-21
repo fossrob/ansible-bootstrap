@@ -18,6 +18,6 @@
       if ! "$(dconf read /org/gnome/desktop/ansible/imported)" == "true"; then
         dconf load / < .dconf/desktop.conf && echo "config imported"
       fi
-  register: dconf_result
   changed_when:
     - '"config imported" in dconf_result.stdout'
+  register: dconf_result
