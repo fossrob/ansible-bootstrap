@@ -32,6 +32,6 @@
 - name: Register Tailscale machine
   ansible.builtin.command:
     cmd: tailscale up --auth-key "{{ tailscale_auth_key }}" --accept-routes="{{ tailscale_accept_routes }}"
-  become: true
   changed_when: false
   when: tailscale_status is failed
+  become: true
