@@ -17,6 +17,3 @@
       tags: flatpaks
     - role: yadm
       tags: yadm
-
-  vars:
-    tailscale_accept_routes: true
