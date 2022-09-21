@@ -1,0 +1,23 @@
+---
+
+- name: Create destination directory
+  ansible.builtin.file:
+    path: .dconf
+    mode: 0700
+    state: directory
+
+- name: Copy dconf configuration files
+  ansible.builtin.copy:
+    src: desktop.conf
+    dest: .dconf/desktop.conf
+    mode: 0600
+
+- name: Import dconf configuration
+  ansible.builtin.shell:
+    cmd: |
+      if ! "$(dconf read /org/gnome/desktop/ansible/imported)" == "true"; then
+        dconf load / < .dconf/desktop.conf && echo "config imported"
+      fi
+  register: dconf_result
+  changed_when:
+    - '"config imported" in dconf_result.stdout'
