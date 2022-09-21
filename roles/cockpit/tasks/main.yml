@@ -1,4 +1,5 @@
 ---
+
 - name: Configure Cockpit socket
   ansible.builtin.systemd:
     name: cockpit.socket
