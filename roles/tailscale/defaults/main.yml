@@ -1,0 +1,4 @@
+---
+
+tailscale_accept_routes: false
+tailscale_auth_key: "{{ vault_tailscale_auth_key }}"

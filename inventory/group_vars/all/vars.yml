@@ -1,0 +1,6 @@
+---
+
+github_gpg_passphrase: "{{ vault_github_gpg_passphrase }}"
+tailscale_auth_key: "{{ vault_tailscale_auth_key }}"
+yadm_personal_access_token: "{{ vault_yadm_personal_access_token }}"
+yadm_encrypt_password: "{{ vault_yadm_encrypt_password }}"

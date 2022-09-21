@@ -1,0 +1,22 @@
+---
+
+- name: System configuration playbook
+  hosts: xps.lan
+  gather_facts: false
+
+  roles:
+    - role: cockpit
+      tags: cockpit
+    - role: insights
+      tags: insights
+    - role: tailscale
+      tags: tailscale
+    - role: packages
+      tags: packages
+    - role: flatpaks
+      tags: flatpaks
+    - role: yadm
+      tags: yadm
+
+  vars:
+    tailscale_accept_routes: true

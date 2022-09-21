@@ -1,0 +1,17 @@
+---
+
+- name: System configuration playbook
+  hosts: samsung.lan
+  gather_facts: false
+
+  roles:
+    - role: headless_laptop
+      tags: headless_laptop
+    - role: cockpit
+      tags: cockpit
+    - role: insights
+      tags: insights
+    - role: tailscale
+      tags: tailscale
+    - role: packages
+      tags: packages

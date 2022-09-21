@@ -1,0 +1,7 @@
+---
+
+- name: Enable insights-client timer
+  ansible.builtin.systemd:
+    name: insights-client.timer
+    enabled: true
+  become: true

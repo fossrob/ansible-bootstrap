@@ -1,0 +1,20 @@
+---
+- name: Configure Cockpit socket
+  ansible.builtin.systemd:
+    name: cockpit.socket
+    enabled: true
+    state: started
+  become: true
+
+- name: Install performance co-pilot
+  ansible.builtin.dnf:
+    name: cockpit-pcp
+    state: present
+  become: true
+
+- name: Configure PCP logger service
+  ansible.builtin.systemd:
+    name: pmlogger.service
+    enabled: true
+    state: started
+  become: true

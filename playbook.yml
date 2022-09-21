@@ -1,0 +1,13 @@
+---
+
+- name: System configuration playbook
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Import roles defined for system
+      ansible.builtin.include_role:
+        name: "{{ role }}"
+      loop: "{{ roles }}"
+      loop_control:
+        loop_var: role

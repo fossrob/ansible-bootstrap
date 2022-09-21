@@ -1,0 +1,8 @@
+---
+
+- name: Enable and start i8kmon service
+  ansible.builtin.systemd:
+    name: i8kmon.service
+    enabled: true
+    state: started
+  become: true

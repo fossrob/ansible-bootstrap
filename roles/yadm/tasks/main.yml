@@ -1,0 +1,64 @@
+---
+- name: Clone YADM repository
+  ansible.builtin.git:
+    repo: https://github.com/fossrob/yadm.git
+    dest: ~/.yadm-project
+    single_branch: true
+    version: 3.2.1
+    depth: 1
+
+- name: Ensure local bin is present
+  ansible.builtin.file:
+    path: ~/.local/bin/
+    state: directory
+    mode: 0750
+
+- name: Symlink YADM executable
+  ansible.builtin.file:
+    path: ~/.local/bin/yadm
+    src: ~/.yadm-project/yadm
+    state: link
+
+- name: Checkout YADM dotfiles
+  ansible.builtin.expect:
+    command: yadm clone -f --no-bootstrap https://{{ yadm_github_username }}@github.com/fossrob/dotfiles.git
+    responses:
+      "Password for 'https://fossrob@github.com'": "{{ yadm_personal_access_token }}"
+    creates: ~/.local/share/yadm/repo.git
+  register: dotfiles_result
+
+- name: Force checkout of conflict YADM dotfiles
+  ansible.builtin.shell:
+    cmd: yadm checkout $(pwd)
+  register: conflict_result
+  changed_when:
+    - '"Updated 1 path" in conflict_result.stderr'
+  when: dotfiles_result is changed  # noqa: no-handler
+
+- name: Decrypt YADM stored secrets
+  ansible.builtin.expect:
+    command: yadm decrypt
+    responses:
+      "enter AES-256-CBC decryption password": "{{ yadm_encrypt_password }}"
+    creates: ~/.gnupg/github.asc
+
+- name: Import GPG key
+  ansible.builtin.shell:
+    cmd: |
+      if ! gpg --list-key D71C1FE78A916668; then
+        gpg --batch --passphrase '{{ github_gpg_passphrase }}' --import ~/.gnupg/github.asc >/dev/null && echo "gpg key imported"
+      fi
+  no_log: true
+  register: gpg_result
+  changed_when:
+    - '"gpg key imported" in gpg_result.stdout'
+
+- name: Change YADM remote to use standard git+ssh
+  ansible.builtin.shell:
+    cmd: |
+      if yadm remote get-url origin | grep -q '^http'; then
+          yadm remote set-url origin git@github.com:fossrob/dotfiles.git && echo "remote updated"
+      fi
+  register: remote_result
+  changed_when:
+    - '"remote updated" in remote_result.stdout'

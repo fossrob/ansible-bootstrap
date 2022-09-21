@@ -1,0 +1,43 @@
+---
+- name: Add Flatpak remote for Flathub
+  community.general.flatpak_remote:
+    name: flathub
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+  become: true
+
+- name: Update metadata to show newly-available software
+  ansible.builtin.command:
+    cmd: flatpak update --appstream
+  changed_when: false
+  become: true
+
+- name: Install Flatpak runtimes
+  community.general.flatpak:
+    name:
+      - org.gtk.Gtk3theme.Adwaita-dark
+      - runtime/org.freedesktop.Platform.ffmpeg-full/x86_64/22.08
+  changed_when: false
+  become: true
+
+- name: Install Flatpak applications
+  community.general.flatpak:
+    name:
+      - com.bitwarden.desktop
+      - com.github.tchx84.Flatseal
+      - com.google.Chrome
+      - com.mattjakeman.ExtensionManager
+      - com.slack.Slack
+      - com.visualstudio.code
+      - io.gitlab.librewolf-community
+      - it.mijorus.smile
+      - md.obsidian.Obsidian
+      - org.chromium.Chromium
+      - org.flameshot.Flameshot
+      - us.zoom.Zoom
+  become: true
+
+- name: Configure dark theme
+  ansible.builtin.command:
+    cmd: flatpak override --env=GTK_THEME=Adwaita-dark
+  changed_when: false
+  become: true
