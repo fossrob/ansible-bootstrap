@@ -1,0 +1,15 @@
+---
+
+- name: Clone distrobox repository
+  ansible.builtin.git:
+    repo: https://github.com/89luca89/distrobox
+    dest: ~/.distrobox-project
+    single_branch: true
+    version: 1.4.1
+    depth: 1
+
+- name: Install distrobox
+  ansible.builtin.command:
+    cmd: ./install
+    chdir: ~/.distrobox-project
+    creates: ~/.local/bin/distrobox

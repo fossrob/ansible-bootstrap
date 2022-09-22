@@ -21,3 +21,5 @@
       tags: yadm
     - role: dconf
       tags: dconf
+    - role: distrobox
+      tags: distrobox

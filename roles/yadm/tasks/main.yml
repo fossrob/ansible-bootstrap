@@ -28,7 +28,7 @@
   no_log: true
   register: dotfiles_result
 
-- name: Force checkout of conflict YADM dotfiles
+- name: Force checkout of conflicting YADM dotfiles
   ansible.builtin.shell:
     cmd: yadm checkout $(pwd)
   changed_when:
