@@ -15,23 +15,21 @@
   changed_when: false
   become: true
 
-- name: Install Flatpak applications
+- name: Fetch list of installed apps
+  ansible.builtin.shell:
+    cmd: flatpak list --app --columns=application | tail -n +1
+  changed_when: false
+  register: flatpaks_installed
+
+- name: Remove unwanted Flatpak apps
   community.general.flatpak:
-    name:
-      - com.bitwarden.desktop
-      - com.github.tchx84.Flatseal
-      - com.google.Chrome
-      - com.mattjakeman.ExtensionManager
-      - com.slack.Slack
-      - com.visualstudio.code
-      - io.gitlab.librewolf-community
-      - it.mijorus.smile
-      - md.obsidian.Obsidian
-      - org.chromium.Chromium
-      - org.flameshot.Flameshot
-      - org.gnome.seahorse.Application
-      - org.keepassxc.KeePassXC
-      - us.zoom.Zoom
+    name: "{{ flatpaks_installed.stdout_lines | difference(flatpaks_install) }}"
+    state: absent
+  become: true
+
+- name: Install Flatpak apps
+  community.general.flatpak:
+    name: "{{ flatpaks_install }}"
     state: present
   become: true
 
