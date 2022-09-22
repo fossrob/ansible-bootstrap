@@ -20,11 +20,13 @@
     cmd: flatpak list --app --columns=application | tail -n +1
   changed_when: false
   register: flatpaks_installed
+  when: flatpaks_purge
 
 - name: Remove unwanted Flatpak apps
   community.general.flatpak:
     name: "{{ flatpaks_installed.stdout_lines | difference(flatpaks_install) }}"
     state: absent
+  when: flatpaks_purge
   become: true
 
 - name: Install Flatpak apps
