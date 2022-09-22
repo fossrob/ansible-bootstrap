@@ -29,6 +29,8 @@
       - md.obsidian.Obsidian
       - org.chromium.Chromium
       - org.flameshot.Flameshot
+      - org.gnome.seahorse.Application
+      - org.keepassxc.KeePassXC
       - us.zoom.Zoom
     state: present
   become: true
