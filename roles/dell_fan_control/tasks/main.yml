@@ -1,8 +1,11 @@
 ---
 
-- name: Enable and start i8kmon service
-  ansible.builtin.systemd:
-    name: i8kmon.service
-    enabled: true
-    state: started
-  become: true
+- name: Gather minimal facts
+  ansible.builtin.setup:
+    gather_subset:
+      - distribution
+      - pkg_mgr
+
+- name: Include tasks based on distribution
+  ansible.builtin.include_tasks:
+    file: "{{ ansible_distribution | lower }}-{{ ansible_pkg_mgr }}.yml"
