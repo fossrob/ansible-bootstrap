@@ -2,24 +2,26 @@
 
 - name: System configuration playbook
   hosts: xps.lan
-  gather_facts: false
+  gather_facts: no
 
   roles:
-    - role: cockpit
-      tags: cockpit
-    - role: insights
-      tags: insights
+    # - role: cockpit
+    #   tags: cockpit
+    # - role: insights
+    #   tags: insights
     - role: tailscale
       tags: tailscale
-    - role: packages
-      tags: packages
-    - role: dell_fan_control
-      tags: dell_fan_control
-    - role: flatpaks
-      tags: flatpaks
+    # - role: packages
+    #   tags: packages
+    # - role: dell_fan_control
+    #   tags: dell_fan_control
+    # - role: flatpaks
+    #   tags: flatpaks
     - role: yadm
       tags: yadm
     - role: dconf
       tags: dconf
     - role: distrobox
       tags: distrobox
+    - role: starship
+      tags: starship
