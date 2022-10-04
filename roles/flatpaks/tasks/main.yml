@@ -6,6 +6,12 @@
     state: present
   become: true
 
+- name: Ensure no filter for Flathub remote
+  ansible.builtin.command:
+    cmd: flatpak remote-modify flathub --no-filter
+  changed_when: false
+  become: true
+
 - name: Install Flatpak runtimes
   community.general.flatpak:
     name:
