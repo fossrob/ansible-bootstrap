@@ -1,0 +1,35 @@
+---
+
+- name: Ensure Nerd Font directory exists
+  ansible.builtin.file:
+    path: ~/.local/share/fonts/NerdFonts
+    state: directory
+    mode: 0755
+
+- name: Fetch and install Nerd Font
+  ansible.builtin.unarchive:
+    src: https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/DroidSansMono.zip
+    remote_src: true
+    dest: ~/.local/share/fonts/NerdFonts/
+    creates: '/var/home/robin/.local/share/fonts/NerdFonts/Droid Sans Mono Nerd Font Complete Mono.otf'
+    mode: 0644
+  register: font_installed
+
+- name: Refresh font cache # noqa no-handler
+  ansible.builtin.command:
+    cmd: fc-cache -f
+  when: font_installed.changed
+
+- name: Ensure local bin is present
+  ansible.builtin.file:
+    path: ~/.local/bin/
+    state: directory
+    mode: 0700
+
+- name: Fetch and install starship
+  ansible.builtin.unarchive:
+    src: https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-gnu.tar.gz
+    remote_src: true
+    dest: ~/.local/bin/
+    creates: ~/.local/bin/starship
+    mode: 0700
