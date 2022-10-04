@@ -1,0 +1,40 @@
+---
+
+# TODO: Tailscale certs?
+
+- name: Configure Tailscale repository
+  ansible.builtin.get_url:
+    url: https://pkgs.tailscale.com/stable/rhel/9/tailscale.repo
+    dest: /etc/yum.repos.d/
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+
+- name: Install Tailscale package
+  ansible.builtin.dnf:
+    name: tailscale
+    state: present
+  become: true
+
+- name: Configure Tailscale service
+  ansible.builtin.systemd:
+    name: tailscaled.service
+    enabled: true
+    state: started
+  become: true
+
+- name: Check Tailscale registration
+  ansible.builtin.command:
+    cmd: tailscale status
+  changed_when: false
+  ignore_errors: true
+  register: tailscale_status
+
+- name: Register Tailscale machine
+  ansible.builtin.command:
+    cmd: tailscale up --auth-key "{{ tailscale_auth_key }}" --accept-routes="{{ tailscale_accept_routes }}"
+  changed_when: false
+  when: tailscale_status is failed
+  no_log: true
+  become: true
