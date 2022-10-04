@@ -20,6 +20,7 @@
     cmd: rpm-ostree install --idempotent --apply-live {{ packages | join(' ') }}
   vars:
     packages:
+      - acpi
       - dell-bios-fan-control
       - i8kutils
   changed_when: false
