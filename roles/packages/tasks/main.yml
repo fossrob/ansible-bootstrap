@@ -1,58 +1,11 @@
 ---
 
-- name: Install EPEL9 Package
-  ansible.builtin.dnf:
-    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-    disable_plugin: "*"
-    disable_gpg_check: true
-    state: present
-  become: true
+- name: Gather minimal facts
+  ansible.builtin.setup:
+    gather_subset:
+      - distribution
+      - pkg_mgr
 
-- name: List enabled repositories
-  ansible.builtin.command:
-    cmd: dnf repolist --disableplugin "*" --enabled
-  changed_when: false
-  register: repolist_enabled
-
-- name: Enable CodeReady Linux Builder repository
-  community.general.ini_file:
-    path: /etc/yum.repos.d/redhat.repo
-    section: codeready-builder-for-rhel-9-x86_64-rpms
-    option: enabled
-    value: 1
-    mode: 0644
-    no_extra_spaces: false
-  when:
-    - '"codeready-builder-for-rhel-9-x86_64-rpms" not in repolist_enabled.stdout'
-  become: true
-
-- name: Enable EPEL9 repository
-  community.general.ini_file:
-    path: /etc/yum.repos.d/epel.repo
-    section: epel
-    option: enabled
-    value: 1
-    mode: 0644
-    no_extra_spaces: true
-  when:
-    - '"epel" not in repolist_enabled.stdout'
-  become: true
-
-- name: Enable fossrob COPR repository
-  ansible.builtin.command:
-    cmd: dnf copr enable -y fossrob/epel9
-  when:
-    - '"copr:copr.fedorainfracloud.org:fossrob:epel9" not in repolist_enabled.stdout'
-  become: true
-
-- name: Install packages
-  ansible.builtin.dnf:
-    name: "{{ packages_install }}"
-    state: present
-  become: true
-
-- name: Remove packages
-  ansible.builtin.dnf:
-    name: "{{ packages_remove }}"
-    state: absent
-  become: true
+- name: Include tasks based on distribution
+  ansible.builtin.include_tasks:
+    file: "{{ ansible_distribution | lower }}-{{ ansible_pkg_mgr }}.yml"

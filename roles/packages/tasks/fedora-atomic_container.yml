@@ -1,0 +1,14 @@
+---
+
+
+- name: Install packages
+  ansible.builtin.command:
+    cmd: rpm-ostree install --idempotent --apply-live {{ packages_install | join(' ') }}
+  changed_when: false
+  become: true
+
+# - name: Remove packages
+#   ansible.builtin.command:
+#     cmd: rpm-ostree install --idempotent -A "{{ packages_remove | join(' ') }}"
+#   changed_when: false
+#   become: true
