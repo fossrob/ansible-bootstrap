@@ -1,5 +1,31 @@
 ---
 
+- name: Set xorg session as default
+  ansible.builtin.lineinfile:
+    path: /etc/gdm/custom.conf
+    insertafter: "^\\[daemon\\]$"
+    line: DefaultSession=gnome-xorg.desktop
+  become: true
+
+- name: Create GDM dconf profile
+  ansible.builtin.copy:
+    content: |
+      user-db:user
+      system-db:gdm
+      file-db:/usr/share/gdm/greeter-dconf-defaults
+    dest: /etc/dconf/profile/gdm
+    mode: 0644
+  notify: update dconf
+  become: true
+
+- name: Copy gdm dconf configuration file
+  ansible.builtin.copy:
+    src: gdm.conf
+    dest: /etc/dconf/db/gdm.d/
+    mode: 0644
+  notify: update dconf
+  become: true
+
 - name: Create destination directory
   ansible.builtin.file:
     path: .dconf
